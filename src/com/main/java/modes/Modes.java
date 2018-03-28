@@ -11,13 +11,18 @@ import com.main.java.games.Games;
  * <p>Cette classe, Modes, est la classe abstraite parente de tous les modes de jeux.</p>
  * <p>Un mode de jeu est composé de plusieurs attributs et méthodes communs :
  * <ul>
- * 	<li>Une méthode d'initialisation</li>
- * 	<li>Une méthode moteur</li>
- * 	<li>Une méthode de fin de jeu</li>
- * 	<li>Une méthode de conformité de saisie</li>
- * 	<li>Une méthode de vérification des conditions de fin de partie</Li>
- * 	<li>Un attribut de récupération de saisie de type Scanner</li>
- * 	<li>Deux attributs de type chaine de caractères (String)
+ * 	<li>Une méthode d'initialisation : init(Games)</li>
+ * 	<li>Une méthode moteur : engine(Games)</li>
+ * 	<li>Une méthode de fin de jeu : endGame(Games)</li>
+ * 	<li>Une méthode de conformité de saisie : verificationOfCompliance(Games,String)</li>
+ * 	<li>Une méthode de vérification des conditions de fin de partie : endGameConditions(String, int, int, String)</Li>
+ * 	<li>Un attribut de récupération de saisie de type Scanner : sc</li>
+ * 	<li>Deux attributs de type chaine de caractères (String) : 
+ * 		<ul>
+ * 			<li>userCombination</li>
+ * 			<li>computerCombination</li>
+ * 		</ul>
+ * 	</li>
  * </ul>
  * </p>
  * 
@@ -110,14 +115,14 @@ public abstract class Modes {
 	 * <p>La méthode qui vérifie les conditions de fin de partie en fonction des paramètres du jeu choisi.</p>
 	 * <p>Les paramètres de la méthode ne sont pas tous utlisé lors de l'appel de cette méthode par une classe enfant de "Games" :
 	 * <ul>
-	 * 	<li>"proposal" est utilisé dans les modes "Challenger", "Defender" et "Duel".</li>
+	 * 	<li>"userProposal" est utilisé dans les modes "Challenger" et "Duel".</li>
 	 * 	<li>"count" et nbrMaxTry sont utilisés dans les modes "Challenger" et "Defender"</li>
-	 * 	<li>"proposal2" est seulement utilisé dans le mode "Duel"</li>
+	 * 	<li>"computerProposal" est utilisé dans les modes "Defender" et "Duel"</li>
 	 * </ul>
 	 * </p>
 	 * 
-	 * @param proposal
-	 * 				   La proposition sous forme de chaine de caractères (String)
+	 * @param userProposal
+	 * 				   La proposition de l'utilisateur sous forme de chaine de caractères (String)
 	 * 
 	 * @param count
 	 * 				Le compteur d'essai sous forme d'entier  
@@ -125,8 +130,8 @@ public abstract class Modes {
 	 * @param nbrMaxTry
 	 * 					Le nombre maximum de tour sous forme d'entier
 	 * 
-	 * @param proposal2
-	 * 					La deuxième proposition
+	 * @param computerProposal
+	 * 					La proposition de l'ordinateur sous forme de chaine de caractères (String)
 	 * 
 	 * @return Un boolean qui informe si les conditions de fin de partie ont été remplis (vrai => true) ou non (faux => false)
 	 * 
@@ -135,7 +140,7 @@ public abstract class Modes {
 	 * @see Defender#endGameConditions(String, int, int, String)
 	 * @see Duel#endGameConditions(String, int, int, String)
 	 */
-	public boolean endGameConditions(String proposal, int count, int nbrMaxTry, String proposal2) {
+	public boolean endGameConditions(String userProposal, int count, int nbrMaxTry, String computerProposal) {
 		return false;
 	}
 	

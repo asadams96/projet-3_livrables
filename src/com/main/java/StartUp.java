@@ -3,6 +3,7 @@ package com.main.java;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import com.main.java.configurations.ReadProperties;
 import com.main.java.games.Games;
 import com.main.java.games.Mastermind;
 import com.main.java.games.SearchMoreLess;
@@ -73,9 +74,10 @@ public class StartUp {
 	private Modes mode;
 	
 	/**
-	 * <p>Attribut de type boolean permettant l'affichage d'une formule de politesse au premier lancement (Bonjour, ect..)</p>
+	 * <p>Attribut de type boolean permettant de charger les paramètres de configuration et d'afficher une formule de politesse au premier lancement (Bonjour, ect..)</p>
 	 * 
 	 * @see StartUp#launch()
+	 * @see ReadProperties
 	 */
 	private boolean firstLaunch = true;		
 	
@@ -159,18 +161,20 @@ public class StartUp {
 	
 	/**
 	 * <p>Methode permettant de lancer les méthode de choix de jeu et de choix de mode de jeu puis de lancer le jeu ainsi que son mode de jeu associé</p>
-	 * <p>De plus, une condition est effectuer à chaque appel de méthode afin de savoir si c'est le premier lancement et au quel cas, afficher une formule de politesse</p>
+	 * <p>De plus, une condition est effectuer à chaque appel de méthode afin de savoir si c'est le premier lancement et au quel cas, les paramètres de l'application sont definis et une formule de politesse est afficher</p>
 	 * 
 	 * @see StartUp#firstLaunch
 	 * @see StartUp#game
 	 * @see StartUp#mode
 	 * @see StartUp#choiceGame()
 	 * @see StartUp#choiceMode()
+	 * @see ReadProperties
 	 * @see Games
 	 * @see Modes
 	 */
 	public void launch() {
 		if(firstLaunch) {
+			new ReadProperties();
 			System.out.println("Bonjour et bienvenue !");
 			firstLaunch = false;
 		}

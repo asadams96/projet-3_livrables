@@ -13,15 +13,23 @@ import com.main.java.modes.Modes;
  *<p> Games est la classe abstraite parente de tous les jeux.</p>
  *<p> Un jeu est composé de plusieurs attributs et de méthodes qui sont généralement communs (mais pas toujours) :
  *<ul>
- *	<li>Un nombre de couleurs possible dans la combinaison secrète</li>
- *	<li>Un format de x chiffres pour la combinaison</li>
- *	<li>Un nombre d'essais maximal autorisé</li>
- *	<li>Un mode développeur</li>
- *	<li>Une information sur les couleurs de la combinaison (pour le mastermind)</li>
- *	<li>Une méthode d'initialisation</li>
- *	<li>Une méthode de comparaison entre la combinaison et la proposition</li>
- *	<li>Une méthode de génération de proposition</li>
- *	<li>Une méthode de formatage des résultats de la comparaison</li>
+ *	<li>Trois entiers (avec leurs getters/setters) : 
+ *		<ul>
+ *			<li>nbrUsablesFigures</li>
+ *			<li>nbrCombi</li>
+ *			<li>nbrMaxTry</li>
+ *		</ul>
+ *	</li>
+ *	<li>Deux booleans (avec leurs getters/setters) :
+ *		<ul>
+ *			<li>devMode</li>
+ *			<li>severalTimesSameColor</li>
+ *		</ul>
+ *	</li>
+ *	<li>Une méthode d'initialisation : initGame()</li>
+ *	<li>Une méthode de comparaison entre la combinaison et la proposition : comparison()</li>
+ *	<li>Une méthode de génération de proposition : proposalsGenerator()</li>
+ *	<li>Une méthode de formatage des résultats de la comparaison : formattingTheResults()</li>
  * </ul>
  * </p>
  * 
@@ -31,13 +39,13 @@ import com.main.java.modes.Modes;
  * @see SearchMoreLess
  * @see Games#nbrUsableFigures
  * @see Games#nbrCombi
- * @see Games#nbrTry
+ * @see Games#nbrMaxTry
  * @see Games#devMode
  * @see Games#severalTimesSameColor
  * @see Games#getNbrCombi()
  * @see Games#setNbrCombi(int)
- * @see Games#getNbrTry()
- * @see Games#setNbrTry(int)
+ * @see Games#getNbrMaxTry()
+ * @see Games#setNbrMaxTry(int)
  * @see Games#getNbrUsableFigures()
  * @see Games#setNbrUsableFigures(int)
  * @see Games#isDevMode()
@@ -45,11 +53,12 @@ import com.main.java.modes.Modes;
  * @see Games#isSeveralTimesSameColor()
  * @see Games#setSeveralTimesSameColor(boolean)
  * @see Games#initGame()
- * @see Games#verifCombi(String, String)
- * @see Games#displayResultsCombi(Hashtable)
- * @see Games#defenderCombi(Hashtable)
+ * @see Games#comparison(String, String)
+ * @see Games#formattingTheResults(Hashtable)
+ * @see Games#proposalsGenerator(Hashtable)
  * @see Modes
  * @see StartUp
+ * @see Config
  * 
  * @author Ayrton
  * @version 1.0
@@ -62,8 +71,9 @@ public abstract class Games {
 	 * 
 	 * @see Games#getNbrUsableFigures()
 	 * @see Games#setNbrUsableFigures(int)
+	 * @see Config#getNbrUsableFigures()
 	 */
-	private int nbrUsableFigures;
+	private int nbrUsableFigures = Config.GameParameters.getNbrUsableFigures();
 	
 	/**
 	 * <p>Le format de la combinaison à x chiffres, il faut que cette valeur soit au minimum à 1.</p>
@@ -71,6 +81,7 @@ public abstract class Games {
 	 * 
 	 * @see Games#getNbrCombi()
 	 * @see Games#setNbrCombi(int)
+	 * @see Config#getNbrCombi()
 	 */
 	private int nbrCombi = Config.GameParameters.getNbrCombi();
 	
@@ -78,10 +89,11 @@ public abstract class Games {
 	 * <p>Le nombre d'essai possible autorisé pour trouver la combinaison secrète.</p>
 	 * <p>Si l'utilisateur trouve la combinaison dans nombre d'essai imparti, il a gagné, sinon il a perdu.</p>
 	 * 
-	 * @see Games#getNbrTry()
-	 * @see Games#setNbrTry(int)
+	 * @see Games#getNbrMaxTry()
+	 * @see Games#setNbrMaxTry(int)
+	 * @see Config#getNbrMaxTry()
 	 */
-	private int nbrTry = Config.GameParameters.getNbrTry();
+	private int nbrMaxTry = Config.GameParameters.getNbrMaxTry();
 	
 	/**
 	 * <p>Le mode développeur est un mode, lorsqu'il est activé (valeur à vrai => true), permettant de connaitre la(es) combinaison(s) au début de la partie.</p>
@@ -89,18 +101,17 @@ public abstract class Games {
 	 *   
 	 * @see Games#isDevMode()
 	 * @see Games#setDevMode(boolean)
+	 * @see Config#isDevMode()
 	 */
 	private boolean devMode = Config.GameParameters.isDevMode();
 	
 	/**
 	 * <p>Litteralement "Plusieurs fois la même couleur" dans la combinaison.</p>
 	 * <p>Sert à aider l'ordinateur à trouver la combinaison secrète en l'informant s'il y a plusieurs fois la présence d'une même couleur dans la combinaison secrète.</p>
+	 * <p>Cette vérification est faites lorsque l'utilisateur doit rentrer une combinaison pour le mode "Defender" et "Dual",cependant cette vérification n'est prise en compte par la suite que pour le jeu MasterMind.</p>
 	 * 
 	 * @see Games#isSeveralTimesSameColor();
 	 * @see Games#setSeveralTimesSameColor(boolean)
-	 * 
-	 * <p>Cette vérification est faites lorsque l'utilisateur doit rentrer une combinaison pour le mode "Defender" et "Dual",cependant cette vérification n'est prise en compte par la suite que pour le jeu MasterMind.</p>
-	 * 
 	 * @see Mastermind
 	 * @see Defender#init(Games)
 	 * @see Duel#init(Games)
@@ -111,6 +122,8 @@ public abstract class Games {
 	 * <p>Retourne le format de la combinaison à x chiffres.</p>
 	 * 
 	 * @return Un entier correspondant au format de la combinaison 
+	 * 
+	 * @see Games#nbrCombi
 	 */
 	public int getNbrCombi() {
 		return nbrCombi;
@@ -123,8 +136,10 @@ public abstract class Games {
 	 * 					Le nouveau format de la combinaison
 	 * 
 	 * @deprecated Depuis la mise en place d'un fichier de configuration où l'on doit mettre à jour les paramètres
+	 * 
+	 * @see Games#nbrCombi
 	 */
-	public void setNbrCombi(int nbrCombi) {
+	protected void setNbrCombi(int nbrCombi) {
 		this.nbrCombi = nbrCombi;
 	}
 	
@@ -132,27 +147,33 @@ public abstract class Games {
 	 * <p>Retourne le nombre d'essais autorisé.</p>
 	 * 
 	 * @return Une entier correspond au nombre d'essai autorisé
+	 * 
+	 * @see Games#nbrMaxTry
 	 */
-	public int getNbrTry() {
-		return nbrTry;
+	public int getNbrMaxTry() {
+		return nbrMaxTry;
 	}
 	
 	/**
 	 * <p>Met à jour le nombre d'essais autorisé.</p>
 	 * 
-	 * @param nbrTry
+	 * @param nbrMaxTry
 	 * 				Le nouveau nombre d'essai autorisé
 	 * 
 	 * @deprecated Depuis la mise en place d'un fichier de configuration où l'on doit mettre à jour les paramètres
+	 * 
+	 * @see Games#nbrMaxTry
 	 */
-	public void setNbrTry(int nbrTry) {
-		this.nbrTry = nbrTry;
+	protected void setNbrMaxTry(int nbrMaxTry) {
+		this.nbrMaxTry = nbrMaxTry;
 	}
 
 	/**
 	 * <p>Retourne le nombre de couleurs différentes autorisé dans la combinaison.</p>
 	 * 
 	 * @return Un entier correspond au nombre de couleurs différentes autorisé dans la combinaison
+	 * 
+	 * @see Games#nbrUsableFigures
 	 */
 	public int getNbrUsableFigures() {
 		return nbrUsableFigures;
@@ -164,8 +185,10 @@ public abstract class Games {
 	 * @param nbrUsableFigures
 	 * 							Un entier correspondant au nouveau nombre de couleurs différentes autorisé dans la combinaison
 	 * 
+	 * @see Games#nbrUsableFigures
+	 * 
 	 */
-	public void setNbrUsableFigures(int nbrUsableFigures) {
+	protected void setNbrUsableFigures(int nbrUsableFigures) {
 		this.nbrUsableFigures = nbrUsableFigures;
 	}
 
@@ -173,6 +196,8 @@ public abstract class Games {
 	 * <p>Retourne une information concernant l'activation du mode développeur ou non.</p>
 	 * 
 	 * @return Un boolean qui sera à "faux" (false) si le mode développeur est désactivé, ou à "vrai" (true) si au contraire il est activé
+	 * 
+	 * @see Games#devMode
 	 */
 	public boolean isDevMode() {
 		return devMode;
@@ -185,9 +210,11 @@ public abstract class Games {
 	 * 				Un boolean correspond au nouveau statut du mode développeur
 	 * 
 	 * @deprecated Depuis la mise en place d'un fichier de configuration où l'on doit mettre à jour les paramètres
+	 * 
+	 * @see Games#devMode
 	 * 				
 	 */
-	public void setDevMode(boolean devMode) {
+	protected void setDevMode(boolean devMode) {
 		this.devMode = devMode;
 	}
 	
@@ -195,6 +222,8 @@ public abstract class Games {
 	 * <p>Retourne une information de type vrai/faux correspondant au fait qu'il y a plusieurs fois la même couleur dans la combinaison.</p>
 	 * 
 	 * @return Un boolean informant qu'il y a plusieurs fois la même couleur dans la combinaison (vrai == true), ou non (faux == false)
+	 * 
+	 * @see Games#severalTimesSameColor
 	 */
 	public boolean isSeveralTimesSameColor() {
 		return severalTimesSameColor;
@@ -205,6 +234,8 @@ public abstract class Games {
 	 * 
 	 * @param severalTimesSameColor
 	 * 								Un boolean mettant à jour le fait qu'il y a plusieurs fois la même couleur dans la combinaison, ou non
+	 * 
+	 * @see Games#severalTimesSameColor
 	 */
 	public void setSeveralTimesSameColor(boolean severalTimesSameColor) {
 		this.severalTimesSameColor = severalTimesSameColor;
@@ -232,10 +263,10 @@ public abstract class Games {
 	 * 
 	 *  <p>Les résultats dépendent du jeu qui a appelé cette méthode.</p>
 	 * 
-	 * @see Mastermind#verifCombi(String, String)
-	 * @see SearchMoreLess#verifCombi(String, String)
+	 * @see Mastermind#comparison(String, String)
+	 * @see SearchMoreLess#comparison(String, String)
 	 */
-	public Hashtable<String,Integer> verifCombi(String combination, String proposal) {
+	public Hashtable<String,Integer> comparison(String combination, String proposal) {
 		return null;
 	}
 	
@@ -250,11 +281,11 @@ public abstract class Games {
 	 * 
 	 * <p>Le formatage dépend du jeu qui a appelé cette méthode.</p>
 	 * 
-	 * @see Mastermind#displayResultsCombi(Hashtable)
-	 * @see SearchMoreLess#displayResultsCombi(Hashtable)
-	 * @see Games#verifCombi(String, String)
+	 * @see Mastermind#formattingTheResults(Hashtable)
+	 * @see SearchMoreLess#formattingTheResults(Hashtable)
+	 * @see Games#comparison(String, String)
 	 */
-	public String displayResultsCombi(Hashtable<String, Integer> table) {
+	public String formattingTheResults(Hashtable<String, Integer> table) {
 		return null;
 	}
 	
@@ -269,11 +300,11 @@ public abstract class Games {
 	 * 
 	 * <p>La proposition dépend du jeu qui a appelé cette méthode.</p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
-	 * @see SearchMoreLess#defenderCombi(Hashtable)
-	 * @see Games#verifCombi(String, String)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
+	 * @see SearchMoreLess#proposalsGenerator(Hashtable)
+	 * @see Games#comparison(String, String)
 	 */
-	public String defenderCombi(Hashtable<String,Integer> table) {
+	public String proposalsGenerator(Hashtable<String,Integer> table) {
 		return null;
 	}
 }

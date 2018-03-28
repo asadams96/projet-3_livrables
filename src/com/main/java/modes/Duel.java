@@ -101,8 +101,9 @@ public class Duel extends Modes {
 	 * @see Duel#endGameConditions(String, int, int, String)
 	 * @see Modes#engine(Games)
 	 * @see Modes#verificationOfCompliance(Games, String)
-	 * @see Games#displayResultsCombi(Hashtable)
-	 * @see Games#verifCombi(String, String)
+	 * @see Games#proposalsGenerator(Hashtable)
+	 * @see Games#formattingTheResults(Hashtable)
+	 * @see Games#comparison(String, String)
 	 * @see Games
 	 */
 	public void engine (Games game) {
@@ -119,7 +120,7 @@ public class Duel extends Modes {
 			System.out.println("La combinaison secrète de l'ordinateur est : "+computerCombination);
 		}
 		
-		for(int i = 0; i < game.getNbrTry(); i++) {
+		while(true) {
 			
 			while(true) {
 				
@@ -131,16 +132,16 @@ public class Duel extends Modes {
 				}
 			}
 			
-			userResults = game.verifCombi(computerCombination, userProposal);
-			out = game.displayResultsCombi(userResults);
+			userResults = game.comparison(computerCombination, userProposal);
+			out = game.formattingTheResults(userResults);
 			
 			System.out.println("Votre proposition : "+userProposal+" -> Réponse : "+out);
 			
 		
 			
-			computerProposal = game.defenderCombi(computerResults);
-			computerResults = game.verifCombi(userCombination, computerProposal);
-			out = game.displayResultsCombi(computerResults);
+			computerProposal = game.proposalsGenerator(computerResults);
+			computerResults = game.comparison(userCombination, computerProposal);
+			out = game.formattingTheResults(computerResults);
 			
 			System.out.println("Proposition de l'ordinateur : "+computerProposal+" -> Réponse : "+out);
 			

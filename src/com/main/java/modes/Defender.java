@@ -84,29 +84,32 @@ public class Defender extends Modes {
 	 * @see Defender#endGameConditions(String, int, int, String)
 	 * @see Modes#engine(Games)
 	 * @see Modes#verificationOfCompliance(Games, String)
-	 * @see Games#displayResultsCombi(Hashtable)
-	 * @see Games#verifCombi(String, String)
+	 * @see Games#proposalsGenerator(Hashtable)
+	 * @see Games#formattingTheResults(Hashtable)
+	 * @see Games#comparison(String, String)
+	 * @see Games#getNbrMaxTry()
 	 * @see Games
 	 */
 	public void engine (Games game) {
 		
 		Hashtable<String,Integer> results = new Hashtable<String,Integer>();
-		String out = "";
+		String out;
+		String computerProposal;
 		
 		if(game.isDevMode()) {
 			System.out.println("La combinaison secrète est : "+this.userCombination);
 		}
 		
-		for(int i = 0; i < game.getNbrTry(); i++) {
+		for(int i = 0; i < game.getNbrMaxTry(); i++) {
 			
-			String proposal = game.defenderCombi(results);
+			computerProposal = game.proposalsGenerator(results);
 
-			results = game.verifCombi(this.userCombination, proposal);
-			out = game.displayResultsCombi(results);
+			results = game.comparison(this.userCombination, computerProposal);
+			out = game.formattingTheResults(results);
 			
-			System.out.println("Proposition : "+proposal+" -> Réponse : "+out);
+			System.out.println("Proposition : "+computerProposal+" -> Réponse : "+out);
 			
-			if(this.endGameConditions(proposal, i, game.getNbrTry(), "")) {
+			if(this.endGameConditions("", i, game.getNbrMaxTry(), computerProposal)) {
 				break;
 			}
 			
@@ -125,9 +128,9 @@ public class Defender extends Modes {
 	 * @see Modes#endGameConditions(String, int, int, String)
 	 * @see Defender#engine(Games)
 	 */
-	public boolean endGameConditions(String proposal, int count, int nbrMaxTry, String proposal2) {
+	public boolean endGameConditions(String userProposal, int count, int nbrMaxTry, String computerProposal) {
 		
-		if(userCombination.equals(proposal)) {
+		if(userCombination.equals(computerProposal)) {
 			System.out.println("\nVous avez perdu ! L'ordinateur a trouvé votre combinaison secrète en "+(count+1)+" essais.");
 			return true;
 		}

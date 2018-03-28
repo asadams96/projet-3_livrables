@@ -9,9 +9,9 @@ import com.main.java.modes.Modes;
 /**
  * <p>Cette classe, SearchMoreLess, est une classe enfant de "Games", en plus des attributs/méthodes que contient "Games", elle possède :
  * <ul>
- * 	<li>Une table de hachage "interval"</li>
- * 	<li>Une liste de chaine de caractères "tryList"</li>
- * 	<li>Une méthode "intervalAdjustment"</li>
+ * 	<li>Une table de hachage de chaines de caractères : interval</li>
+ * 	<li>Une liste de chaines de caractères : tryList</li>
+ * 	<li>Une méthode : intervalAdjustment</li>
  * </ul>
  * </p>
  * 
@@ -23,9 +23,9 @@ import com.main.java.modes.Modes;
  * @see SearchMoreLess#tryList
  * @see SearchMoreLess#SearchMoreLess()
  * @see SearchMoreLess#initGame()
- * @see SearchMoreLess#verifCombi(String, String)
- * @see SearchMoreLess#displayResultsCombi(Hashtable)
- * @see SearchMoreLess#defenderCombi(Hashtable)
+ * @see SearchMoreLess#comparison(String, String)
+ * @see SearchMoreLess#formattingTheResults(Hashtable)
+ * @see SearchMoreLess#proposalsGenerator(Hashtable)
  * @see SearchMoreLess#intervalAdjustment(Hashtable, String)
  * @see Modes
  * 
@@ -48,7 +48,7 @@ public class SearchMoreLess extends Games{
 	private ArrayList<String> tryList;
 	
 	/**
-	 * <p>Le contructeur du jeu SearchMoreLess, où le nombre de "couleurs" (<= pour ce jeu ce sera des chiffres) utilisable est définis avec une valeur qui restera inchangé ([0;9]), quelques soit la configuration mise en place.</p>
+	 * <p>Le contructeur du jeu SearchMoreLess, où le nombre de "couleurs" (<= pour ce jeu ce sont des chiffres) utilisable est définis avec une valeur qui restera inchangé ([0;9]), quelques soit la configuration mise en place.</p>
 	 */
 	public SearchMoreLess() {
 		
@@ -86,9 +86,9 @@ public class SearchMoreLess extends Games{
 	 * </ul>
 	 * </p>
 	 * 
-	 * @see Games#verifCombi(String, String)
+	 * @see Games#comparison(String, String)
 	 */
-	public Hashtable<String, Integer> verifCombi(String combination, String proposal) {
+	public Hashtable<String, Integer> comparison(String combination, String proposal) {
 		Hashtable<String,Integer> out= new Hashtable<String,Integer>();
 		String key;
 		
@@ -123,9 +123,10 @@ public class SearchMoreLess extends Games{
 	 * </ul>
 	 * </p>
 	 * 
-	 * @see SearchMoreLess#verifCombi(String, String)
+	 * @see SearchMoreLess#comparison(String, String)
+	 * @see Games#formattingTheResults(Hashtable)
 	 */
-	public String displayResultsCombi(Hashtable<String, Integer> table) {
+	public String formattingTheResults(Hashtable<String, Integer> table) {
 		String out = "";
 		
 		for(int i = 0; i < this.getNbrCombi(); i++) {
@@ -150,14 +151,14 @@ public class SearchMoreLess extends Games{
 	 * 
 	 * <p>Le nombre x correspond à la taille de la combinaison</p>
 	 * 
-	 * @see SearchMoreLess#verifCombi(String, String)
+	 * @see SearchMoreLess#comparison(String, String)
 	 * @see SearchMoreLess#intervalAdjustment(Hashtable, String)
 	 * @see SearchMoreLess#tryList
 	 * @see SearchMoreLess#interval
 	 * @see Games#getNbrCombi()
-	 * @see Games#defenderCombi(Hashtable)
+	 * @see Games#proposalsGenerator(Hashtable)
 	 */
-	public String defenderCombi(Hashtable<String,Integer> table) {
+	public String proposalsGenerator(Hashtable<String,Integer> table) {
 		
 		String out = "";
 		String previousCombi = null;
@@ -233,15 +234,15 @@ public class SearchMoreLess extends Games{
 	 *  </p>
 	 * 
 	 * @see SearchMoreLess#interval
-	 * @see SearchMoreLess#verifCombi(String, String)
-	 * @see SearchMoreLess#defenderCombi(Hashtable)
+	 * @see SearchMoreLess#comparison(String, String)
+	 * @see SearchMoreLess#proposalsGenerator(Hashtable)
 	 */
 	public void intervalAdjustment(Hashtable<String,Integer> table, String previousCombi) {
 		
 		String nwInterval;
 
 		
-		if(interval.isEmpty()) {							// Si c'est le premier tour, applique un interval par defaut pour chaque nombre de la combi
+		if(interval.isEmpty()) {
 			for(int i = 0; i < this.getNbrCombi(); i++) {
 				interval.put(""+i, "09");
 			}

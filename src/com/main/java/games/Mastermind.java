@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
 
-import com.main.java.configurations.Config;
 import com.main.java.modes.Modes;
 
 /**
  * <p>Cette classe, Mastermind, est une classe enfant de "Games", en plus des attributs/méthodes que contient "Games", elle possède :
  * <ul>
- * 	<li>Une table de hachage d'entiers "wellPlacedSaved"</li>
- * 	<li>Une liste d'entier "goodValuesSaved"</li>
- * 	<li>Une liste d'entier "badValuesSaved"</li>
- * 	<li>Une liste de chaine de caractères "tryList"</li>
- * 	<li>Un boolean "firstStep"</li>
- * 	<li>Un boolean "nwValue"</li>
- * 	<li>Un entier "placement"</li>
- * 	<li>Un entier "savingPlacement"</li>
- * 	<li>Un entier "value"</li>
+ * 	<li>Une table de hachage d'entiers : wellPlacedSaved</li>
+ * 	<li>Une liste d'entiers : goodValuesSaved</li>
+ * 	<li>Une liste d'entiers : badValuesSaved</li>
+ * 	<li>Une liste de chaines de caractères : tryList</li>
+ * 	<li>Deux booleans :
+ * 		<ul>		
+ *  		<li>firstStep</li>
+ * 			<li>nwValue</li>
+ * 		</ul>
+ * 	<li>Trois entiers :
+ *		<ul> 
+ *  		<li>placement</li>
+ * 			<li>savingPlacement</li>
+ * 			<li>value</li>
+ * 		</ul>
  * </ul>
  * </p>
  * 
@@ -38,10 +43,10 @@ import com.main.java.modes.Modes;
  * @see Mastermind#value
  * @see Mastermind#Mastermind()
  * @see Mastermind#initGame()
- * @see Mastermind#verifCombi(String, String)
- * @see Mastermind#displayResultsCombi(Hashtable)
- * @see Mastermind#defenderCombi(Hashtable)
- * @see Mastermind#doPlacement()
+ * @see Mastermind#comparison(String, String)
+ * @see Mastermind#formattingTheResults(Hashtable)
+ * @see Mastermind#proposalsGenerator(Hashtable)
+ * @see Mastermind#placementUpdate()
  * 
  * @author Ayrton
  * @version 1.0
@@ -52,14 +57,14 @@ public class Mastermind extends Games{
 	/**
 	 * <p>La table de hachage d'entiers contenant l'emplacement ainsi que les valeurs des couleurs bien placés.</p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 */
 	private Hashtable<Integer,Integer> wellPlacedSaved;
 		
 	/**
 	 * <p>La liste d'entier contenant des couleurs présentes ou bien placés non ajouté à la table de hachage wellPlacedSaved</p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 * @see Mastermind#wellPlacedSaved
 	 */
 	private ArrayList<Integer> goodValuesSaved; 
@@ -67,14 +72,14 @@ public class Mastermind extends Games{
 	/**
 	 * <p>La liste de chaine de caractères contenant des propositions effectuées par l'ordinateur afin de trouver la bonne combinaison.</p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 */
 	private ArrayList<String> tryList;
 		
 	/**
 	 * <p>La liste d'entier contenant les mauvaises couleurs, reduit le nombre de coup necessaire pour trouver la combinaison en ne réutilisant pas les mauvaises couleurs lors des prochaines proposition.</p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 */
 	private ArrayList<Integer> badValuesSaved;
 		
@@ -82,7 +87,7 @@ public class Mastermind extends Games{
 	 * <p>Boolean informant la méthode de génération de proposition afin de savoir si elle doit rester à la première étape ou passer à la deuxième.</p>
 	 * <p>Vrai (true) => On reste dans la première étape / Faux (false) => On passe à la seconde étape. </p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 */
 	private boolean firstStep;
 		
@@ -90,7 +95,7 @@ public class Mastermind extends Games{
 	 * <p>Boolean informant la méthode de génération de propositon afin de savoir si une nouvelle couleur doit être testé ou non.</p>
 	 * <p>Vrai (true) => On test avec une nouvelle valeur / Faux (false) => On garde l'ancienne valeur.</p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 * @see Mastermind#value
 	 */
 	private boolean nwValue;
@@ -98,7 +103,7 @@ public class Mastermind extends Games{
 	/**
 	 * <p>Un entier servant à indiquer le placement de la valeur à tester lors de la génération de la proposition.</p> 
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 * @see Mastermind#value
 	 * @see Mastermind#savingPlacement
 	 */
@@ -107,7 +112,7 @@ public class Mastermind extends Games{
 	/**
 	 * <p>Un entier servant a enregistrer la valeur du placement dans la dernière proposition, permettra de l'enrengistrer dans la table de hachage "wellPlacedValue" si la valeur était bien placé. </p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 * @see Mastermind#value
 	 * @see Mastermind#placement
 	 */
@@ -116,22 +121,19 @@ public class Mastermind extends Games{
 	/**
 	 * <p>Un entier servant à indiqué la couleur qu'on est entrain de tester</p>
 	 * 
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 * @see Mastermind#nwValue
 	 */
 	private int value;
 
 		
 	/**
-	 * <p>Le constructeur du jeu Mastermind qui défini le nombre de couleurs utilisable lors de son instanciation.</p>
+	 * <p>Le constructeur par défaut du jeu Mastermind,  non obligatoire <= il est vide.</p>
 	 */
-	public Mastermind() {
-		
-		this.setNbrUsableFigures(Config.GameParameters.getNbrUsableFigures());
-	}
+	public Mastermind() {}
 	
 	/**
-	 * <p>La méthode initialise le jeu SearchMoreLess en instanciant ses attributs avec une valeur par défaut.</p>
+	 * <p>La méthode initialise le jeu Mastermind en instanciant ses attributs avec une valeur par défaut.</p>
 	 * 
 	 * @see Mastermind#wellPlacedSaved
 	 * @see Mastermind#goodValuesSaved
@@ -174,9 +176,9 @@ public class Mastermind extends Games{
 	 * <p>De plus, pour le bon fonctionnement de la méthode et éviter les doublons dans les couleurs présentes s'il y a plusieurs fois la même couleur dans la proposition, 
 	 * une liste est crée afin d'ajouter les couleurs de la combinaison qui ont déja été validés avec une couleur de la proposition.</p>
 	 * 
-	 * @see Games#verifCombi(String, String) 
+	 * @see Games#comparison(String, String) 
 	 */
-	public Hashtable<String,Integer> verifCombi(String combination, String proposal) {
+	public Hashtable<String,Integer> comparison(String combination, String proposal) {
 		
 		Hashtable<String, Integer> out = new Hashtable<String, Integer>();
 		ArrayList<Integer> presentListIndex = new ArrayList<Integer>();
@@ -217,9 +219,10 @@ public class Mastermind extends Games{
 	 * 	<li>Formatage des résultats selon leurs valeurs dans la chaine de caractères (String)</li>
 	 * 	<li>Retourne la chaine de caractères</li>
 	 * 
-	 * @see Games#displayResultsCombi(Hashtable)
+	 * @see Mastermind#comparison(String, String)
+	 * @see Games#formattingTheResults(Hashtable)
 	 */
-	public String displayResultsCombi(Hashtable<String, Integer> table) {
+	public String formattingTheResults(Hashtable<String, Integer> table) {
 		int present = table.get("present");
 		int wellPlaced = table.get("wellPlaced");
 		String out = "";
@@ -278,8 +281,8 @@ public class Mastermind extends Games{
 	 * </ul>
 	 * </p>
 	 * 
-	 * @see Mastermind#verifCombi(String, String)
-	 * @see Mastermind#doPlacement()
+	 * @see Mastermind#comparison(String, String)
+	 * @see Mastermind#placementUpdate()
 	 * @see Mastermind#wellPlacedSaved
 	 * @see Mastermind#goodValuesSaved
 	 * @see Mastermind#tryList
@@ -289,9 +292,9 @@ public class Mastermind extends Games{
 	 * @see Mastermind#placement
 	 * @see Mastermind#savingPlacement
 	 * @see Mastermind#value
-	 * @see Games#defenderCombi(Hashtable)
+	 * @see Games#proposalsGenerator(Hashtable)
 	 */
-	public String defenderCombi(Hashtable<String,Integer> table) {
+	public String proposalsGenerator(Hashtable<String,Integer> table) {
 		String out = "";
 		String previousCombi = "";
 		int present = -99;
@@ -395,7 +398,7 @@ public class Mastermind extends Games{
 					}
 				}
 				
-				placement = doPlacement();
+				placement = placementUpdate();
 				nwValue = false;
 			}
 				
@@ -414,7 +417,7 @@ public class Mastermind extends Games{
 			}
 			
 			savingPlacement = placement;
-			placement = doPlacement();
+			placement = placementUpdate();
 		}
 				
 		if(out.contains("-1")) { 
@@ -439,9 +442,9 @@ public class Mastermind extends Games{
 	 * @see Mastermind#nwValue
 	 * @see Mastermind#wellPlacedSaved
 	 * @see Mastermind#placement
-	 * @see Mastermind#defenderCombi(Hashtable)
+	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 */
-	public int doPlacement() {
+	public int placementUpdate() {
 		int out = 0;
 		
 		if(nwValue) {

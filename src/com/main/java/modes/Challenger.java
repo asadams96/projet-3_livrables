@@ -66,35 +66,36 @@ public class Challenger extends Modes {
 	 * @see Challenger#endGameConditions(String, int, int, String)
 	 * @see Modes#engine(Games)
 	 * @see Modes#verificationOfCompliance(Games, String)
-	 * @see Games#displayResultsCombi(Hashtable)
-	 * @see Games#verifCombi(String, String)
+	 * @see Games#formattingTheResults(Hashtable)
+	 * @see Games#comparison(String, String)
+	 * @see Games#getNbrMaxTry()
 	 * @see Games
 	 */
 	public void engine(Games game) {
 		Hashtable<String,Integer> results = new Hashtable<String,Integer>();
-		String proposal = "";
-		String out = "";
+		String userProposal;
+		String out;
 		
 		if(game.isDevMode()) {
 			System.out.println("La combinaison secrète est : "+this.computerCombination);
 		}
 		
-		for(int i = 0; i < game.getNbrTry(); i++) {
+		for(int i = 0; i < game.getNbrMaxTry(); i++) {
 	
 			while(true) {
 				System.out.print("\nDevinez la combinaison secrète : ");
-				proposal = sc.next();
-				if(this.verificationOfCompliance(game, proposal)) {
+				userProposal = sc.next();
+				if(this.verificationOfCompliance(game, userProposal)) {
 					break;
 				}
 			}
 			
-			results = game.verifCombi(this.computerCombination, proposal);
-			out = game.displayResultsCombi(results);
+			results = game.comparison(this.computerCombination, userProposal);
+			out = game.formattingTheResults(results);
 			
-			System.out.println("Proposition : "+proposal+" -> Réponse : "+out);
+			System.out.println("Proposition : "+userProposal+" -> Réponse : "+out);
 			
-			if(this.endGameConditions(proposal, i, game.getNbrTry(), "")) {
+			if(this.endGameConditions(userProposal, i, game.getNbrMaxTry(), "")) {
 				break;
 			}
 		}
@@ -113,9 +114,9 @@ public class Challenger extends Modes {
 	 * @see Modes#endGame(Games)
 	 * @see Challenger#engine(Games)
 	 */
-	public boolean endGameConditions(String proposal, int count, int nbrMaxTry, String proposal2) {
+	public boolean endGameConditions(String userProposal, int count, int nbrMaxTry, String computerProposal) {
 		
-		if(computerCombination.equals(proposal)) {
+		if(computerCombination.equals(userProposal)) {
 			System.out.println("\nBravo ! Vous avez gagné ! Vous avez réussi à trouver la combinaison secrète de l'ordinateur.");
 			return true;
 		}
