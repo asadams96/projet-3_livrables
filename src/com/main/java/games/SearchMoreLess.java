@@ -64,8 +64,13 @@ public class SearchMoreLess extends Games{
 	 * @see Games#initGame()
 	 */
 	public void initGame() {
+		
+		logGames.debug("Début d'initGame()");
+		
 		interval = new Hashtable<String,String>();
 		tryList = new ArrayList<String>();
+		
+		logGames.debug("Fin d'initGame()");
 	}
 
 	/**
@@ -89,6 +94,9 @@ public class SearchMoreLess extends Games{
 	 * @see Games#comparison(String, String)
 	 */
 	public Hashtable<String, Integer> comparison(String combination, String proposal) {
+		
+		logGames.debug("Début de comparison()");
+		
 		Hashtable<String,Integer> out= new Hashtable<String,Integer>();
 		String key;
 		
@@ -109,8 +117,9 @@ public class SearchMoreLess extends Games{
 			}
 		}
 		
-		return out;
+		logGames.debug("Fin de comparison()");
 		
+		return out;
 	}
 	
 	/**
@@ -127,6 +136,9 @@ public class SearchMoreLess extends Games{
 	 * @see Games#formattingTheResults(Hashtable)
 	 */
 	public String formattingTheResults(Hashtable<String, Integer> table) {
+		
+		logGames.debug("Début de formattingTheResults()");
+		
 		String out = "";
 		
 		for(int i = 0; i < this.getNbrCombi(); i++) {
@@ -141,6 +153,8 @@ public class SearchMoreLess extends Games{
 				out += "=";
 			}
 		}
+		
+		logGames.debug("Fin de formattingTheResults()");
 		
 		return out;
 	}
@@ -160,15 +174,17 @@ public class SearchMoreLess extends Games{
 	 */
 	public String proposalsGenerator(Hashtable<String,Integer> table) {
 		
+		logGames.debug("Début de proposalsGenerator()");
+
 		String out = "";
 		String previousCombi = null;
 		int random =0;
 		
 		
-		try {
+		if(!tryList.isEmpty()) {
+			
 			previousCombi = tryList.get(tryList.size()-1);
-							
-		}catch(ArrayIndexOutOfBoundsException e) {}
+		}
 		
 		this.intervalAdjustment(table, previousCombi);
 		
@@ -199,7 +215,7 @@ public class SearchMoreLess extends Games{
 		}
 		
 		
-		else { // Sinon (si) previousCombi est null => On est au premier tour
+		else {
 			for(int i = 0; i < this.getNbrCombi(); i++) {
 				random = new Random().nextInt(10);
 				out += String.valueOf(random);
@@ -207,6 +223,8 @@ public class SearchMoreLess extends Games{
 		}
 		
 		tryList.add(out);
+		
+		logGames.debug("Fin de proposalsGenerator()");
 		
 		return out;
 	}
@@ -239,31 +257,44 @@ public class SearchMoreLess extends Games{
 	 */
 	public void intervalAdjustment(Hashtable<String,Integer> table, String previousCombi) {
 		
-		String nwInterval;
+		logGames.trace("Début d'intervalAdjustment()");
 
+		String nwInterval;
 		
 		if(interval.isEmpty()) {
 			for(int i = 0; i < this.getNbrCombi(); i++) {
 				interval.put(""+i, "09");
 			}
 		}
+		
 		else {
 
-		for(int i = 0; i < this.getNbrCombi(); i++) {
+			for(int i = 0; i < this.getNbrCombi(); i++) {
 			
-			if(table.get(""+i).equals(1) && Integer.valueOf(previousCombi.substring(i, i+1)) >= Integer.valueOf(interval.get(""+i).substring(0, 1))) {	
-				nwInterval = String.valueOf(Integer.valueOf(previousCombi.substring(i, i+1))+1) + interval.get(""+i).substring(1, 2);
-				interval.put(""+i, nwInterval);
+				if(table.get(""+i).equals(1) && Integer.valueOf(previousCombi.substring(i, i+1)) >= Integer.valueOf(interval.get(""+i).substring(0, 1))) {	
+					nwInterval = String.valueOf(Integer.valueOf(previousCombi.substring(i, i+1))+1) + interval.get(""+i).substring(1, 2);
+					interval.put(""+i, nwInterval);
+				}
+				else if(table.get(""+i).equals(-1) && Integer.valueOf(previousCombi.substring(i, i+1)) <= Integer.valueOf(interval.get(""+i).substring(1, 2))) {
+					nwInterval = interval.get(""+i).substring(0, 1) + String.valueOf(Integer.valueOf(previousCombi.substring(i, i+1))-1);
+					interval.put(""+i, nwInterval);
+				}
+				else if(table.get(""+i).equals(0)) {
+					nwInterval = previousCombi.substring(i,i+1);
+					interval.put(""+i, nwInterval);
+				}			
 			}
-			else if(table.get(""+i).equals(-1) && Integer.valueOf(previousCombi.substring(i, i+1)) <= Integer.valueOf(interval.get(""+i).substring(1, 2))) {
-				nwInterval = interval.get(""+i).substring(0, 1) + String.valueOf(Integer.valueOf(previousCombi.substring(i, i+1))-1);
-				interval.put(""+i, nwInterval);
-			}
-			else if(table.get(""+i).equals(0)) {
-				nwInterval = previousCombi.substring(i,i+1);
-				interval.put(""+i, nwInterval);
-			}			
 		}
-		}		
+		
+		for(int i = 0; i < this.getNbrCombi(); i++) {
+			if(interval.get(""+i).length() == 1) {
+				logGames.trace("Valeur de l'interval à l'emplacement "+(i+1)+" : ["+interval.get(""+i).substring(0, 1)+"]");
+			}
+			else if (interval.get(""+i).length() == 2){
+				logGames.trace("Valeur de l'interval à l'emplacement "+(i+1)+" : ["+interval.get(""+i).substring(0, 1)+";"+interval.get(""+i).substring(1, 2)+"]");
+			}
+		}
+		
+		logGames.trace("Fin d'intervalAdjustment()");
 	}
 }

@@ -3,6 +3,8 @@ package com.main.java.modes;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import com.main.java.Main;
 import com.main.java.StartUp;
 import com.main.java.games.Games;
@@ -47,6 +49,11 @@ import com.main.java.games.Games;
  *
  */
 public abstract class Modes {
+	
+	/**
+	 * <p>Le log de la classe abstraite Modes.java et de ses classes enfants</p>
+	 */
+	protected final Logger logModes = Logger.getLogger(this.getClass());
 
 	/**
 	 * <p>L'attribut servant à récupérer les saisies de l'utilisateur.</p>
@@ -155,6 +162,9 @@ public abstract class Modes {
 	 * @see StartUp
 	 */
 	public void endGame(Games game) {
+		
+		logModes.debug("Début d'endGame()");
+		
 		int choice;
 		boolean again = true;
 		
@@ -178,9 +188,17 @@ public abstract class Modes {
 						System.out.println("Au revoir.");
 						again = false;
 						break;
+					default:
+						logModes.error("Saisie invalide dans endGame(Games) => ["+choice+"]");
+						break;
 				}
-			}catch(InputMismatchException e) {sc.nextLine();}
-		}		
+			}catch(InputMismatchException e) {
+				
+				logModes.error("Saisie invalide dans endGame() => ["+sc.nextLine()+"]");
+			}
+		}
+		
+		logModes.debug("Fin d'endGame()");
 	}
 	
 	/**
@@ -200,10 +218,16 @@ public abstract class Modes {
 	 * @see Games
 	 */
 	protected boolean verificationOfCompliance(Games game, String str) {
+		
+		logModes.trace("Début de verificationOfCompliance()");
+
 		boolean out = true;
 		String informations = "";
 		
 		if(str.length() != game.getNbrCombi()) {
+			
+			logModes.error("Saisie invalide dans verificationOfCompliance()=> Format de "+game.getNbrCombi()+" chiffres requis => ["+str+"]");
+			
 			informations += "\n!-- Veuillez respecter le format de "+game.getNbrCombi()+" chiffres --!";
 			out = false;
 		}
@@ -211,15 +235,21 @@ public abstract class Modes {
 		for(int i = 0; i < str.length(); i++) {
 			try {
 				if(Integer.valueOf(str.substring(i, i+1)) >= game.getNbrUsableFigures() ) {
+					
 					informations += "\n!-- Saisi de chiffre(s) invalide(s) --! \n!-- Choisissez uniquement les chiffres suivants :";
+					
 					for(int j = 0; j < game.getNbrUsableFigures(); j++) {
 						informations += " "+j;
 					}
+					
 					informations += " --!";
 					out = false;
 					break;
 				}
 			}catch(NumberFormatException e) {
+				
+				logModes.error("Saisie invalide dans verificationOfCompliance()=> Caractères interdits saisie => ["+str+"]");
+				
 				informations += "\n!-- Saisissez uniquement des chiffres --!";
 				out = false;
 				break;
@@ -227,6 +257,8 @@ public abstract class Modes {
 		}
 		informations += "\n";
 		System.out.println(informations);
+		
+		logModes.trace("Fin de verificationOfCompliance()");
 		
 		return out;
 	}

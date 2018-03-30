@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import com.main.java.StartUp;
 
 /**
@@ -36,6 +38,11 @@ import com.main.java.StartUp;
  *
  */
 public class ReadProperties {
+	
+	/**
+	 * <p>Le log de la classe ReadProperties.java</p>
+	 */
+	final private Logger logReadProperties = Logger.getLogger(ReadProperties.class);
 	
 	/**
 	 * <p>L'attribut "properties" permet d'obtenir les propriétés du fichier "config.properties".</p>
@@ -83,6 +90,9 @@ public class ReadProperties {
 	 * @see Config
 	 */
 	public ReadProperties() {
+		
+		logReadProperties.info("Début de ReadProperties()");
+		
 		try {
 			
 			input = new FileInputStream(path);
@@ -94,19 +104,26 @@ public class ReadProperties {
 			Config.GameParameters.setNbrUsableFigures(Integer.valueOf(properties.getProperty("parameter.nbrUsableFigures")));
 			Config.GameParameters.setDevMode(Boolean.valueOf(properties.getProperty("parameter.devMode")));
 			
+			logReadProperties.info("Lecture du fichier Config.properties et affectation de ses propriétés à Config.java -> Réussi.");
+			
 		} catch(FileNotFoundException e) {
-			e.printStackTrace();
+			logReadProperties.error("Le fichier Config.properties n'a pas été trouvé -> Config.java garde ses valeurs par défaut. "+e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logReadProperties.error("Echec de l'ouverture du flux vers le fichier Config.properties -> Config.java garde ses valeurs par défaut. "+e);;
 		} finally {
 			if (input != null) {
 				try {
 					input.close();
-				} catch (final IOException e) {
-					e.printStackTrace();
+				} catch (IOException e) {
+					logReadProperties.error("Echec de la fermeture du flux. "+e);
 				}
 			}
 		}
+		
+		logReadProperties.info("Format combinaison -> ["+Config.GameParameters.getNbrCombi()+"] / Nombre d'essais autorisé -> ["+Config.GameParameters.getNbrMaxTry()+"] "
+				+ "/ Nombre de couleurs utilisables -> ["+Config.GameParameters.getNbrUsableFigures()+"] / Mode développeur -> ["+Config.GameParameters.isDevMode()+"].");
+		
+		logReadProperties.info("Fin de ReadProperties()");
 	}
 
 

@@ -2,6 +2,8 @@ package com.main.java.games;
 
 import java.util.Hashtable;
 
+import org.apache.log4j.Logger;
+
 import com.main.java.StartUp;
 import com.main.java.configurations.Config;
 import com.main.java.modes.Defender;
@@ -64,6 +66,11 @@ import com.main.java.modes.Modes;
  * @version 1.0
  */
 public abstract class Games {
+	
+	/**
+	 * <p>Le log de la classe abstraite Games.java et de ses classes enfants</p>
+	 */
+	protected final Logger logGames = Logger.getLogger(this.getClass());
 	
 	/**
 	 * <p>Le nombre de couleurs possible dans la combinaison, ce nombre de couleurs est représenté par des chiffres, de 4 à 10 couleurs.</p>
@@ -140,6 +147,7 @@ public abstract class Games {
 	 * @see Games#nbrCombi
 	 */
 	protected void setNbrCombi(int nbrCombi) {
+		logGames.warn("Utilisation de setNbrCombi() -> Deprecated");
 		this.nbrCombi = nbrCombi;
 	}
 	
@@ -165,6 +173,7 @@ public abstract class Games {
 	 * @see Games#nbrMaxTry
 	 */
 	protected void setNbrMaxTry(int nbrMaxTry) {
+		logGames.warn("Utilisation de setNbrMaxTry() -> Deprecated");
 		this.nbrMaxTry = nbrMaxTry;
 	}
 
@@ -238,6 +247,7 @@ public abstract class Games {
 	 * @see Games#severalTimesSameColor
 	 */
 	public void setSeveralTimesSameColor(boolean severalTimesSameColor) {
+		logGames.trace("Utilisation de setSeveralTimesSameColor() -> ["+severalTimesSameColor+"].");
 		this.severalTimesSameColor = severalTimesSameColor;
 	}
 

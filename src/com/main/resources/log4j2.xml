@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+  <appenders>
+    <File name="MyFile" fileName="com/main/resources/logs/Log.log">
+        <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </File>             
+  </appenders>
+
+  <loggers>  
+    <logger name = "com.main.java.Main" level = "trace" />
+    <logger name = "com.main.java.StartUp" level = "trace" />
+    <logger name = "com.main.java.configurations.ReadProperties" level = "trace" />
+    <logger name = "com.main.java.configurations.Config" level = "trace" />
+    <logger name = "com.main.java.games.Games" level = "trace" />
+    <logger name = "com.main.java.games.Mastermind" level = "trace" />
+    <logger name = "com.main.java.games.SearchMoreLess" level = "trace" />
+    <logger name = "com.main.java.modes.Modes" level = "trace" />
+    <logger name = "com.main.java.modes.Challenger" level = "trace" />
+    <logger name = "com.main.java.modes.Defender" level = "trace" />
+    <logger name = "com.main.java.modes.Duel" level = "trace" />
+    <root level="error">
+      <appender-ref ref="MyFile" level="trace"/>
+    </root>    
+  </loggers>
+</configuration>

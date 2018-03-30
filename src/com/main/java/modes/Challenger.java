@@ -39,6 +39,9 @@ public class Challenger extends Modes {
 	 * @see Games
 	 */
 	public void init(Games game) {
+		
+		logModes.debug("Début d'init()");
+		
 		computerCombination = "";
 		
 		game.initGame();
@@ -47,6 +50,8 @@ public class Challenger extends Modes {
 			
 			this.computerCombination += new Random().nextInt(game.getNbrUsableFigures());
 		}
+		
+		logModes.debug("Fin d'init()");
 	}
 	
 	/**
@@ -72,33 +77,40 @@ public class Challenger extends Modes {
 	 * @see Games
 	 */
 	public void engine(Games game) {
+		
+		logModes.debug("Début d'engine()");
+		
 		Hashtable<String,Integer> results = new Hashtable<String,Integer>();
 		String userProposal;
 		String out;
 		
 		if(game.isDevMode()) {
-			System.out.println("La combinaison secrète est : "+this.computerCombination);
+			System.out.println("La combinaison secrète est : "+computerCombination);
 		}
 		
 		for(int i = 0; i < game.getNbrMaxTry(); i++) {
 	
 			while(true) {
-				System.out.print("\nDevinez la combinaison secrète : ");
+				System.out.print("\nDevinez la combinaison secrète de "+game.getNbrCombi()+" de l'ordinateur : ");
 				userProposal = sc.next();
+				
 				if(this.verificationOfCompliance(game, userProposal)) {
 					break;
 				}
 			}
 			
-			results = game.comparison(this.computerCombination, userProposal);
+			results = game.comparison(computerCombination, userProposal);
 			out = game.formattingTheResults(results);
 			
 			System.out.println("Proposition : "+userProposal+" -> Réponse : "+out);
+			logModes.trace("Combinaison ordinateur -> "+computerCombination+" / Proposition utilisateur -> "+userProposal+" / Réponse -> "+out+".");
 			
 			if(this.endGameConditions(userProposal, i, game.getNbrMaxTry(), "")) {
 				break;
 			}
 		}
+		
+		logModes.debug("Fin d'engine()");
 	}
 	
 	/**
@@ -116,16 +128,32 @@ public class Challenger extends Modes {
 	 */
 	public boolean endGameConditions(String userProposal, int count, int nbrMaxTry, String computerProposal) {
 		
+		logModes.debug("Début d'endGameConditions()");
+		
+		String logInformation;
+		String information;
+		boolean out;
+		
 		if(computerCombination.equals(userProposal)) {
-			System.out.println("\nBravo ! Vous avez gagné ! Vous avez réussi à trouver la combinaison secrète de l'ordinateur.");
-			return true;
+			logInformation = "Condition de fin de partie validé -> L'utilisateur a gagné  au bout de "+(count+1)+" coups.";
+			information = "\nBravo ! Vous avez gagné ! Vous avez réussi à trouver la combinaison secrète de l'ordinateur au bout de "+(count+1)+" essais.";
+			System.out.println(information);
+			out = true;
 		}
 		else if(count == nbrMaxTry-1) {
-			System.out.println("\nVous avez perdu ! Le nombre de "+nbrMaxTry+" essais autorisé a été atteint.\nLa combinaison secrète était : "+computerCombination+".");
-			return true;
+			logInformation = "Condition de fin de partie validé -> L'utilisateur a perdu  au bout de "+(count+1)+" coups.";
+			information = "\nVous avez perdu ! Le nombre de "+nbrMaxTry+" essais autorisé a été atteint.\nLa combinaison secrète était : "+computerCombination+".";
+			System.out.println(information);
+			out = true;
 		}
 		else {
-			return false;
+			logInformation = "Condition de fin de partie non validé.";
+			out = false;
 		}
+		
+		logModes.debug(logInformation);
+		logModes.debug("Fin d'endGameConditions()");
+
+		return out;
 	}
 }

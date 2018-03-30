@@ -45,7 +45,9 @@ public class Defender extends Modes {
 	 * @see Mastermind
 	 */
 	public void init(Games game) {
-
+		
+		logModes.debug("Debut d'init()");
+		
 		game.initGame();
 		
 		while(true) {
@@ -64,6 +66,8 @@ public class Defender extends Modes {
 				}
 			}
 		}
+		
+		logModes.debug("Fin d'init()");
 	}
 	
 	/**
@@ -92,6 +96,8 @@ public class Defender extends Modes {
 	 */
 	public void engine (Games game) {
 		
+		logModes.debug("Debut d'engine()");
+		
 		Hashtable<String,Integer> results = new Hashtable<String,Integer>();
 		String out;
 		String computerProposal;
@@ -108,12 +114,16 @@ public class Defender extends Modes {
 			out = game.formattingTheResults(results);
 			
 			System.out.println("Proposition : "+computerProposal+" -> Réponse : "+out);
+			logModes.trace("Combinaison utilisateur -> "+userCombination+" / Proposition ordinateur -> "+computerProposal+" / Réponse -> "+out+".");
+
 			
 			if(this.endGameConditions("", i, game.getNbrMaxTry(), computerProposal)) {
 				break;
 			}
 			
 		}
+		
+		logModes.debug("Fin d'engine()");
 	}
 	
 	/**
@@ -130,16 +140,32 @@ public class Defender extends Modes {
 	 */
 	public boolean endGameConditions(String userProposal, int count, int nbrMaxTry, String computerProposal) {
 		
+		logModes.debug("Début d'endGameConditions()");
+		
+		String logInformation;
+		String information;
+		boolean out;
+		
 		if(userCombination.equals(computerProposal)) {
-			System.out.println("\nVous avez perdu ! L'ordinateur a trouvé votre combinaison secrète en "+(count+1)+" essais.");
-			return true;
+			logInformation = "Condition de fin de partie validé -> L'utilisateur a perdu au bout de "+(count+1)+" coups.";
+			information = "\nVous avez perdu ! L'ordinateur a trouvé votre combinaison secrète en "+(count+1)+" essais.";
+			System.out.println(information);
+			out = true;
 		}
 		else if(count == nbrMaxTry-1) {
-			System.out.println("\nBravo ! Vous avez gagné ! L'ordinateur n'a pas réussi à trouver votre combinaison secrète dans les "+nbrMaxTry+" essais imparti.");
-			return true;
+			logInformation = "Condition de fin de partie validé -> L'utilisateur a gagné au bout de "+(count+1)+" coups.";
+			information = "\nBravo ! Vous avez gagné ! L'ordinateur n'a pas réussi à trouver votre combinaison secrète dans les "+nbrMaxTry+" essais imparti.";
+			System.out.println(information);
+			out = true;
 		}
 		else {
-			return false;
+			logInformation = "Condition de fin de partie non validé.";
+			out = false;
 		}
+		
+		logModes.debug(logInformation);
+		logModes.debug("Fin d'endGameConditions()");
+
+		return out;
 	}
 }

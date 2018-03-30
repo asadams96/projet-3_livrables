@@ -3,6 +3,8 @@ package com.main.java;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 import com.main.java.configurations.ReadProperties;
 import com.main.java.games.Games;
 import com.main.java.games.Mastermind;
@@ -48,6 +50,10 @@ import com.main.java.modes.Modes;
  *
  */
 public class StartUp {
+	/**
+	 * <p>Le log de la classe StartUp.java</p>
+	 */
+	final private Logger logStartUp = Logger.getLogger(StartUp.class);
 	
 	/**
 	 * <p>Attribut permettant de récupérer les saisies de l'utilisateur.</p>
@@ -94,6 +100,9 @@ public class StartUp {
 	 * @see SearchMoreLess
 	 */
 	public void choiceGame() {
+		
+		logStartUp.info("Début de choiceGame()");
+		
 		int choice;
 		boolean again = true;
 		
@@ -113,9 +122,18 @@ public class StartUp {
 						this.game = new Mastermind();
 						again = false;
 						break;
+					default:
+						logStartUp.error("Saisie invalide dans choiceGame() => ["+choice+"]");
+						break;
+					
 				}
-			}catch(InputMismatchException e) {sc.nextLine();} // Vide le chariot car si une exception est levé => Boucle infini
+			} catch(InputMismatchException e) {
+				
+				logStartUp.error("Saisie invalide dans choiceGame() => ["+sc.nextLine()+"]");				
+			} 
 		}
+		
+		logStartUp.info("Fin de choiceGame()");
 	}
 	
 	/**
@@ -132,6 +150,9 @@ public class StartUp {
 	 * @see Duel
 	 */
 	public void choiceMode() {
+		
+		logStartUp.info("Début de choiceMode()");
+		
 		int choice;
 		boolean again = true;
 		
@@ -154,9 +175,17 @@ public class StartUp {
 						this.mode = new Duel();
 						again = false;
 						break;
+					default:
+						logStartUp.error("Saisie invalide dans choiceMode() => ["+choice+"]");
+						break;
 				}
-			}catch(InputMismatchException e) {sc.nextLine();}
+			}catch(InputMismatchException e) {
+				
+				logStartUp.error("Saisie invalide dans choiceMode() => ["+sc.nextLine()+"]");				
+			}
 		}
+		
+		logStartUp.info("Fin de choiceMode()");
 	}
 	
 	/**
@@ -174,6 +203,9 @@ public class StartUp {
 	 */
 	public void launch() {
 		if(firstLaunch) {
+			
+			logStartUp.info("Début de launch()");
+			
 			new ReadProperties();
 			System.out.println("Bonjour et bienvenue !");
 			firstLaunch = false;
@@ -183,5 +215,7 @@ public class StartUp {
 		this.mode.init(this.game);
 		this.mode.engine(this.game);
 		this.mode.endGame(this.game);
+		
+		logStartUp.info("Fin de launch()");
 	}
 }

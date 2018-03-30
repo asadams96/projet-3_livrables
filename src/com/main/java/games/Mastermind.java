@@ -147,6 +147,9 @@ public class Mastermind extends Games{
 	 * @see Games#initGame()
 	 */
 	public void initGame() {
+		
+		logGames.debug("Début d'initGame()");
+		
 		wellPlacedSaved = new Hashtable<Integer,Integer>();
 		goodValuesSaved = new ArrayList<Integer>();
 		tryList = new ArrayList<String>();
@@ -156,6 +159,8 @@ public class Mastermind extends Games{
 		placement = 0;
 		savingPlacement = 0;
 		value = 0;
+		
+		logGames.debug("Fin d'initGame()");
 	}
 	
 	/**
@@ -180,6 +185,8 @@ public class Mastermind extends Games{
 	 */
 	public Hashtable<String,Integer> comparison(String combination, String proposal) {
 		
+		logGames.debug("Début de comparison()");
+
 		Hashtable<String, Integer> out = new Hashtable<String, Integer>();
 		ArrayList<Integer> presentListIndex = new ArrayList<Integer>();
 		int wellPlaced = 0;
@@ -208,6 +215,8 @@ public class Mastermind extends Games{
 		out.put("present", present);
 		out.put("wellPlaced", wellPlaced);
 		
+		logGames.debug("Fin de comparison()");
+		
 		return out;
 	}
 	
@@ -223,6 +232,9 @@ public class Mastermind extends Games{
 	 * @see Games#formattingTheResults(Hashtable)
 	 */
 	public String formattingTheResults(Hashtable<String, Integer> table) {
+		
+		logGames.debug("Début de formattingTheResults()");
+
 		int present = table.get("present");
 		int wellPlaced = table.get("wellPlaced");
 		String out = "";
@@ -239,6 +251,8 @@ public class Mastermind extends Games{
 			out = ""+present+" présent(s).";
 		}
 		
+		logGames.debug("Fin de formattingTheResults()");
+
 		return out;
 	}
 	
@@ -295,6 +309,9 @@ public class Mastermind extends Games{
 	 * @see Games#proposalsGenerator(Hashtable)
 	 */
 	public String proposalsGenerator(Hashtable<String,Integer> table) {
+		
+		logGames.debug("Début de proposalsGenerator()");
+
 		String out = "";
 		String previousCombi = "";
 		int present = -99;
@@ -302,14 +319,17 @@ public class Mastermind extends Games{
 		int random;
 		boolean toAddTable = true;
 		
-		try {
-			previousCombi = tryList.get(tryList.size()-1);
-		}catch(ArrayIndexOutOfBoundsException e) {}
 		
-		try {
+		if(!tryList.isEmpty()) {
+			
+			previousCombi = tryList.get(tryList.size()-1);
+		}
+		
+		if(table.containsKey("present") && table.containsKey("wellPlaced")) {
+			
 			present = table.get("present");
 			wellPlaced = table.get("wellPlaced");
-		}catch(NullPointerException e) {}
+		}
 		
 		
 		if(firstStep) {
@@ -424,6 +444,8 @@ public class Mastermind extends Games{
 			out = out.replaceAll("-1", "X");
 		}
 		
+		logGames.debug("Fin de proposalsGenerator()");
+
 		return out;
 	}
 	
@@ -445,6 +467,9 @@ public class Mastermind extends Games{
 	 * @see Mastermind#proposalsGenerator(Hashtable)
 	 */
 	public int placementUpdate() {
+		
+		logGames.trace("Début de placementUpdate()");
+
 		int out = 0;
 		
 		if(nwValue) {
@@ -470,6 +495,9 @@ public class Mastermind extends Games{
 			}
 		}
 		
+		logGames.trace("Valeur du placement : "+out);
+		logGames.trace("Fin de placementUpdate()");
+
 		return out;
 	}
 

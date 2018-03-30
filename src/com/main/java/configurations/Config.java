@@ -1,5 +1,7 @@
 package com.main.java.configurations;
 
+import org.apache.log4j.Logger;
+
 import com.main.java.games.Games;
 
 /**
@@ -56,6 +58,11 @@ public enum Config {
 	 * @see ReadProperties
 	 */
 	GameParameters(4,15,10,false);
+	
+	/**
+	 * <p>Le log de la classe Config.java<p>
+	 */
+	final private Logger logConfig = Logger.getLogger(Config.class);
 	
 	/**
 	 * <p>L'attribut représentant le format de la combinaison à x chiffres. L'interval de valeur est de [1;10].</p>
@@ -123,6 +130,8 @@ public enum Config {
 		this.nbrMaxTry = nbrMaxTry;
 		this.nbrUsableFigures = nbrUsableFigures;
 		this.devMode = devMode;
+		logConfig.trace("Affectation des valeurs par défaut : nbrCombi -> ["+nbrCombi+"] / nbrMaxTry -> ["+nbrMaxTry+"] /"
+				+ " nbrUsableFigures -> ["+nbrUsableFigures+"] / devMode -> ["+devMode+"]. ");
 	}
 	
 	/**
@@ -134,6 +143,7 @@ public enum Config {
 	 * @see Games
 	 */
 	public int getNbrCombi() {
+		logConfig.trace("Utilisation de getNbrCombi() -> ["+nbrCombi+"].");
 		return nbrCombi;
 	}
 
@@ -148,6 +158,7 @@ public enum Config {
 	 * @see ReadProperties
 	 */
 	protected void setNbrCombi(int nbrCombi) {
+		logConfig.trace("Utilisation de setNbrCombi() -> ["+nbrCombi+"].");
 		this.nbrCombi = nbrCombi;
 	}
 
@@ -160,6 +171,7 @@ public enum Config {
 	 * @see Games
 	 */
 	public int getNbrMaxTry() {
+		logConfig.trace("Utilisation de getNbrMaxTry() -> ["+nbrMaxTry+"].");
 		return nbrMaxTry;
 	}
 
@@ -174,6 +186,7 @@ public enum Config {
 	 * @see ReadProperties 
 	 */
 	protected void setNbrMaxTry(int nbrMaxTry) {
+		logConfig.trace("Utilisation de setNbrMaxTry() -> ["+nbrMaxTry+"].");
 		this.nbrMaxTry = nbrMaxTry;
 	}
 
@@ -186,6 +199,7 @@ public enum Config {
 	 * @see Games
 	 */
 	public int getNbrUsableFigures() {
+		logConfig.trace("Utilisation de getNbrUsableFigures() -> ["+nbrUsableFigures+"].");
 		return nbrUsableFigures;
 	}
 
@@ -200,6 +214,7 @@ public enum Config {
 	 * @see ReadProperties
 	 */
 	protected void setNbrUsableFigures(int nbrUsableFigures) {
+		logConfig.trace("Utilisation de setNbrUsableFigures() -> ["+nbrUsableFigures+"].");
 		this.nbrUsableFigures = nbrUsableFigures;
 	}
 	
@@ -212,6 +227,7 @@ public enum Config {
 	 * @see Games
 	 */
 	public boolean isDevMode() {
+		logConfig.trace("Utilisation de isDevMode() -> ["+devMode+"].");
 		return devMode;
 	}
 	
@@ -226,6 +242,7 @@ public enum Config {
 	 * @see ReadProperties
 	 */
 	protected void setDevMode(boolean devMode) {
+		logConfig.trace("Utilisation de setDevMode() -> ["+devMode+"].");
 		this.devMode = devMode;
 	}
 
