@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="WARN">
   <appenders>
-    <File name="MyFile" fileName="com/main/resources/logs/Log.log">
+    <File name="MyFile" fileName="src/com/main/resources/logs/Log.log">
         <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </File>             
   </appenders>
-
   <loggers>  
     <logger name = "com.main.java.Main" level = "trace" />
     <logger name = "com.main.java.StartUp" level = "trace" />
@@ -18,8 +17,9 @@
     <logger name = "com.main.java.modes.Challenger" level = "trace" />
     <logger name = "com.main.java.modes.Defender" level = "trace" />
     <logger name = "com.main.java.modes.Duel" level = "trace" />
-    <root level="error">
-      <appender-ref ref="MyFile" level="trace"/>
+    <root>
+   		<!-- Pour modifier le niveau des logs, remplacer la valeur de "level" à la ligne ci-dessous (valeurs conseillées : info / error) -->
+      <appender-ref ref="MyFile" level="info"/>
     </root>    
   </loggers>
 </configuration>
