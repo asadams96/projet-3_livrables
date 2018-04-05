@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
+import com.main.java.configurations.Config;
 import com.main.java.configurations.ReadProperties;
 import com.main.java.games.Games;
 import com.main.java.games.Mastermind;
@@ -85,7 +86,57 @@ public class StartUp {
 	 * @see StartUp#launch()
 	 * @see ReadProperties
 	 */
-	private boolean firstLaunch = true;		
+	private boolean firstLaunch = true;
+	
+	/**
+	 * <p>Attribut de type boolean permettant de modifier le mode développeur en passant outre le fichier de configuration "config.properties".<P>
+	 * 
+	 * @see StartUp#property
+	 * @see StartUp#StartUp()
+	 * @see StartUp#StartUp(boolean)
+	 * @see StartUp#launch()
+	 */
+	private boolean devMode;
+	
+	/**
+	 * <p>Attribut de type boolean permettant de savoir quel constructeur à été utilisé.<p>
+	 * 
+	 * @see StartUp#devMode
+	 * @see StartUp#StartUp()
+	 * @see StartUp#StartUp(boolean)
+	 * @see StartUp#launch()
+	 */
+	private boolean property = false;
+	
+	/**
+	 * <p>Le contructeur par défaut où le mode développeur est définit par le fichier "config.properties", en l'absence de ce fichier ce mode est définit par la valeur par défaut.</p>
+	 * 		présente dans l'énumération "Config.java"<p>
+	 * 
+	 * @see StartUp#property
+	 * @see StartUp#launch()
+	 * @see StartUp#StartUp(boolean)
+	 * @see Config
+	 * @see Main
+	 */
+	public StartUp() {}
+	
+	/**
+	 * <p>Le constructeur permettant de modifier le mode développeur en passant outre le fichier de configuration "config.properties".<p>
+	 * 
+	 * @param pDevMode
+	 * 					Le paramètre de type boolean informant de l'activation (vrai => true) ou non (faux => false) du mode développeur
+	 * 
+	 * @see StartUp#property
+	 * @see StartUp#devMode
+	 * @see StartUp#StartUp()
+	 * @see StartUp#launch()
+	 * @see Config
+	 * @see Main
+	 */
+	public StartUp(boolean pDevMode) {
+		this.devMode = pDevMode;
+		this.property = true;
+	}
 	
 	/**
 	 * <p>Methode permettant de choisir le jeu au quel l'utilisateur souhaite jouer</p>
@@ -195,9 +246,12 @@ public class StartUp {
 	 * @see StartUp#firstLaunch
 	 * @see StartUp#game
 	 * @see StartUp#mode
+	 * @see StartUp#devMode
+	 * @see StartUp#property
 	 * @see StartUp#choiceGame()
 	 * @see StartUp#choiceMode()
 	 * @see ReadProperties
+	 * @see Config
 	 * @see Games
 	 * @see Modes
 	 */
@@ -207,6 +261,11 @@ public class StartUp {
 			logStartUp.info("Début de launch()");
 			
 			new ReadProperties();
+			
+			if(this.property) {
+				Config.GameParameters.setDevMode(this.devMode);
+			}
+			
 			System.out.println("Bonjour et bienvenue !");
 			firstLaunch = false;
 		}

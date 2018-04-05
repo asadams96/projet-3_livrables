@@ -241,7 +241,7 @@ public enum Config {
 	 * @see ReadProperties#ReadProperties()
 	 * @see ReadProperties
 	 */
-	protected void setDevMode(boolean devMode) {
+	public void setDevMode(boolean devMode) {
 		logConfig.trace("Utilisation de setDevMode() -> ["+devMode+"].");
 		this.devMode = devMode;
 	}
